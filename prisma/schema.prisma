@@ -11,6 +11,7 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
 enum EstadoCita {
   PROGRAMADA
   COMPLETADA
@@ -27,6 +28,8 @@ model Especialidades {
   id      Int       @id @default(autoincrement())
   nombre  String    @unique
   medicos Medicos[]
+
+  @@map("especialidades")
 }
 
 model Medicos {
@@ -37,6 +40,8 @@ model Medicos {
   especialidadId Int            @map("especialidad_id")
   especialidad   Especialidades @relation(fields: [especialidadId], references: [id])
   citas          Citas[]
+
+  @@map("medicos")
 }
 
 model Pacientes {
@@ -46,6 +51,8 @@ model Pacientes {
   email           String   @unique
   fechaNacimiento DateTime @map("fecha_nacimiento")
   citas           Citas[]
+
+  @@map("pacientes")
 }
 
 model Citas {
@@ -58,6 +65,8 @@ model Citas {
 
   paciente Pacientes @relation(fields: [pacienteId], references: [id])
   medico   Medicos   @relation(fields: [medicoId], references: [id])
+
+  @@map("citas")
 }
 
 model Usuarios {

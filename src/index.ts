@@ -1,6 +1,8 @@
 import express from "express";
 import "dotenv/config";
 import prisma from "./config/prisma";
+import PatientRouter from "./routes/paciente.router.js";
+import MedicoRouter from "./routes/doctor.router";
 
 const app = express();
 
@@ -14,44 +16,8 @@ app.get("/", (_req, res) => {
   });
 });
 
-app.get("/api/especialidades", async (_req, res) => {
-  try {
-    const specialties = await prisma.especialidades.findMany({
-      orderBy: {
-        id: "asc",
-      },
-    });
-
-    res.json(specialties);
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Error al obtener las especialidades",
-    });
-  }
-});
-
-app.get("/api/doctores", async (_req, res) => {
-  try {
-    const doctors = await prisma.medicos.findMany({
-      include: {
-        especialidad: true,
-      },
-      orderBy: {
-        id: "asc",
-      },
-    });
-
-    res.json(doctors);
-  } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: "Error al obtener los médicos",
-    });
-  }
-});
+app.use("/api/pacientes", PatientRouter);
+app.use("/api/medicos", MedicoRouter);
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en http://localhost:${PORT}`);
